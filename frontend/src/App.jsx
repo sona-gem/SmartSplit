@@ -13,6 +13,8 @@ import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import useTripStore from "./store/useTripStore";
 import Trips from "./pages/Trips";
+import TripSummary from "./pages/TripSummary";
+import SettleUp from "./pages/SettleUp";
 
 function Navbar({ user, logout }) {
   const location = useLocation();
@@ -32,8 +34,14 @@ function Navbar({ user, logout }) {
             <Link to={`/trip/${tripId}/expenses`} className="text-blue-600">
               Expenses
             </Link>
+            <Link to={`/trip/${tripId}/summary`} className="text-blue-600">
+              Summary
+            </Link>
             <Link to={`/trip/${tripId}/add`} className="text-blue-600">
               + Add
+            </Link>
+            <Link to={`/trip/${tripId}/settle`} className="text-blue-600">
+              Settle
             </Link>
           </>
         )}
@@ -88,6 +96,23 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <AddExpense />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/trip/:tripId/summary"
+            element={
+              // to check whether the user is authenticated
+              <ProtectedRoute>
+                <TripSummary />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/trip/:tripId/settle"
+            element={
+              <ProtectedRoute>
+                <SettleUp />
               </ProtectedRoute>
             }
           />

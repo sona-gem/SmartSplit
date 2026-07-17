@@ -6,6 +6,7 @@ const expenseSchema = new mongoose.Schema({
   amount: { type: Number, required: true },
   paidBy: { type: String, required: true },
   splitAmong: [{ type: String }], //array of member names
+  category: { type: String, default: "Other" },
   date: { type: Date, default: Date.now },
 });
 

@@ -1,4 +1,5 @@
 import useTripStore from "../store/useTripStore";
+import { getCategoryEmoji } from "../utils/categories";
 
 export default function ExpenseCard({ expense }) {
   const deleteExpense = useTripStore((state) => state.deleteExpense);
@@ -8,10 +9,16 @@ export default function ExpenseCard({ expense }) {
     <div className="bg-white border rounded-xl p-4 mb-3 shadow-sm">
       <div className="flex justify-between items-start">
         <div>
-          <p className="font-semibold text-gray-800">{expense.description}</p>
+          <div className="flex items-center gap-2">
+            <span>{getCategoryEmoji(expense.category)}</span>
+            <p className="font-semibold text-gray-800">{expense.description}</p>
+          </div>
           <p className="text-sm text-gray-500 mt-1">
             Paid by <span className="font-medium">{expense.paidBy}</span>
           </p>
+          <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full mt-1 inline-block">
+            {expense.category}
+          </span>
         </div>
         <div className="text-right flex flex-col items-end gap-2">
           <p className="text-lg font-bold text-gray-900">₹{expense.amount}</p>

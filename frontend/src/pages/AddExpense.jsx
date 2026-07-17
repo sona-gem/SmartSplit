@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import useTripStore from "../store/useTripStore";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { CATEGORIES } from "../utils/categories";
 
 export default function AddExpense() {
   const { tripId } = useParams();
@@ -13,6 +14,8 @@ export default function AddExpense() {
   const [amount, setAmount] = useState("");
   const [paidBy, setPaidBy] = useState("");
   const [splitAmong, setSplitAmong] = useState([]);
+  const [category, setCategory] = useState("Other");
+  const [customCategory, setCustomCategory] = useState("");
 
   // set defaults once trip loads
   useEffect(() => {
@@ -50,6 +53,8 @@ export default function AddExpense() {
       amount: parseFloat(amount),
       paidBy,
       splitAmong,
+      category:
+        category === "Other" && customCategory ? customCategory : category,
       date: new Date().toISOString().split("T")[0], //Date func returns both date and time together => use split to splt at time and select the 1st val that gives date
     });
 
@@ -83,6 +88,38 @@ export default function AddExpense() {
             placeholder="0"
             className="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400"
           />
+        </div>
+
+        {/* category selector */}
+        <div>
+          <label className="text-sm text-gray-600 block mb-2">Category</label>
+          <div className="flex gap-2 flex-wrap">
+            {CATEGORIES.map((cat) => (
+              <button
+                type="button"
+                key={cat.value}
+                onClick={() => setCategory(cat.value)}
+                className={`px-3 py-1 rounded-full text-sm border transition-colors ${
+                  category === cat.value
+                    ? "bg-blue-600 text-white border-blue-600"
+                    : "bg-white text-gray-600 border-gray-300"
+                }`}
+              >
+                {cat.emoji} {cat.value}
+              </button>
+            ))}
+          </div>
+
+          {/* custom category input shows when Other is selected */}
+          {category === "Other" && (
+            <input
+              type="text"
+              value={customCategory}
+              onChange={(e) => setCustomCategory(e.target.value)}
+              placeholder="Custom category (optional)"
+              className="mt-2 w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          )}
         </div>
 
         {/* for paidBy */}

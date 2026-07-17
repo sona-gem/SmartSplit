@@ -142,6 +142,32 @@ const useTripStore = create((set, get) => ({
       set({ error: err.message });
     }
   },
+  settleUp: async (tripId, transaction) => {
+    try {
+      const res = await fetch(`/api/trips/${tripId}/settle`, {
+        method: "POST",
+        headers: get().getAuthHeader(),
+        body: JSON.stringify(transaction),
+      });
+      const updatedTrip = await res.json();
+      set({ trip: updatedTrip });
+    } catch (err) {
+      set({ error: err.message });
+    }
+  },
+
+  clearSettlements: async (tripId) => {
+    try {
+      const res = await fetch(`/api/trips/${tripId}/settle`, {
+        method: "DELETE",
+        headers: get().getAuthHeader(),
+      });
+      const updatedTrip = await res.json();
+      set({ trip: updatedTrip });
+    } catch (err) {
+      set({ error: err.message });
+    }
+  },
 }));
 
 export default useTripStore;
