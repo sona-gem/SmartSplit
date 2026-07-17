@@ -1,5 +1,5 @@
-import { useMemo } from "react"; //its a react hook, helps to improve performace by caching the result (eg: recalculate teh total if expences change
-import { useNavigate } from "react-router-dom"; //allows navigating to another page
+import { useMemo, useEffect } from "react"; //its a react hook, helps to improve performace by caching the result (eg: recalculate teh total if expences change
+import { useNavigate, useParams } from "react-router-dom"; //allows navigating to another page
 import useTripStore from "../store/useTripStore";
 import {
   PieChart,
@@ -21,9 +21,16 @@ const COLORS = [
 ];
 
 export default function TripSummary() {
+  const { tripId } = useParams();
   const trip = useTripStore((state) => state.trip);
   const expenses = useTripStore((state) => state.expenses);
   const navigate = useNavigate();
+  const fetchTrip = useTripStore((state) => state.fetchTrip);
+  const token = useTripStore((state) => state.token);
+
+  useEffect(() => {
+    if (token && tripId) fetchTrip(tripId);
+  }, []);
 
   // total spent
   const totalSpent = useMemo(

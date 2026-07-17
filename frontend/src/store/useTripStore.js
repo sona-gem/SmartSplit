@@ -68,6 +68,8 @@ const useTripStore = create((set, get) => ({
     Authorization: `Bearer ${get().token}`,
   }),
 
+
+  //all these functions act as a bridg ebwt react components and backendAPI
   //fetch trip + expenses from API
   fetchTrip: async (tripId) => {
     set({ loading: true });
@@ -164,6 +166,32 @@ const useTripStore = create((set, get) => ({
       });
       const updatedTrip = await res.json();
       set({ trip: updatedTrip });
+    } catch (err) {
+      set({ error: err.message });
+    }
+  },
+  generateInvite: async (tripId) => {
+    try {
+      const res = await fetch(`/api/trips/${tripId}/invite`, {
+        method: "POST",
+        headers: get().getAuthHeader(),
+      });
+      const data = await res.json();
+      return data.inviteToken;
+    } catch (err) {
+      set({ error: err.message });
+    }
+  },
+
+  joinTrip: async (token, userName) => {
+    try {
+      const res = await fetch(`/api/trips/join/${token}`, {
+        method: "POST",
+        headers: get().getAuthHeader(),
+        body: JSON.stringify({ name: userName }),
+      });
+      const data = await res.json();
+      return data;
     } catch (err) {
       set({ error: err.message });
     }

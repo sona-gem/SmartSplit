@@ -7,7 +7,7 @@ export default function Trips() {
   const fetchTrips = useTripStore((state) => state.fetchTrips);
   const createTrip = useTripStore((state) => state.createTrip);
   const navigate = useNavigate();
-
+  const user = useTripStore((state) => state.user);
   const [showForm, setShowForm] = useState(false);
   const [tripName, setTripName] = useState("");
   const [membersInput, setMembersInput] = useState("");
@@ -18,9 +18,12 @@ export default function Trips() {
 
   async function handleCreate(e) {
     e.preventDefault();
-    if (!tripName || !membersInput) return;
-    const members = membersInput.split(",").map((m) => ({ name: m.trim() }));
-    const newTrip = await createTrip({ name: tripName, members });
+    if (!tripName) return;
+    // create trip with only the creator as a member
+    const newTrip = await createTrip({
+      name: tripName,
+      members: [{ name: user.name, userId: user.id }], // only creator
+    });
     if (newTrip) navigate(`/trip/${newTrip._id}`);
   }
 
@@ -53,19 +56,10 @@ export default function Trips() {
               className="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
-          <div>
-            <label className="text-sm text-gray-600 block mb-1">Members</label>
-            <input
-              type="text"
-              value={membersInput}
-              onChange={(e) => setMembersInput(e.target.value)}
-              placeholder="e.g. Gem, Arjun, Priya"
-              className="w-full border rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-400"
-            />
-            <p className="text-xs text-gray-400 mt-1">
-              Separate names with commas
-            </p>
-          </div>
+          <p className="text-xs text-gray-400">
+            You'll be added automatically. Invite others via link after
+            creating.
+          </p>
           <button
             type="submit"
             className="bg-blue-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-blue-700 transition-colors"
@@ -73,10 +67,6 @@ export default function Trips() {
             Create Trip
           </button>
         </form>
-      )}
-
-      {trips.length === 0 && !showForm && (
-        <p className="text-gray-400 text-sm">No trips yet. Create one!</p>
       )}
 
       {trips.map((trip) => (

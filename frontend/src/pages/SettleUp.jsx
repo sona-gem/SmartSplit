@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import useTripStore from "../store/useTripStore";
 import { calculateBalances } from "../utils/calculateBalances";
@@ -10,6 +10,12 @@ export default function SettleUp() {
   const expenses = useTripStore((state) => state.expenses);
   const settleUp = useTripStore((state) => state.settleUp);
   const clearSettlements = useTripStore((state) => state.clearSettlements);
+  const fetchTrip = useTripStore((state) => state.fetchTrip);
+  const token = useTripStore((state) => state.token);
+
+  useEffect(() => {
+    if (token && tripId) fetchTrip(tripId);
+  }, []);
 
   const balances = useMemo(() => {
     if (!trip) return {};
@@ -17,7 +23,16 @@ export default function SettleUp() {
   }, [expenses, trip]);
 
   const transactions = useMemo(() => {
-    return simplifyDebts(balances);
+    if (!balances || Object.keys(balances).length === 0) return [];
+
+    const cleanBalances = Object.fromEntries(
+      Object.entries(balances).filter(
+        ([__dirname, v]) => typeof v === "number" && !isNaN(v),
+      ),
+    );
+    if (Object.keys(cleanBalances).length === 0) return [];
+
+    return simplifyDebts(cleanBalances);
   }, [balances]);
 
   const settlements = trip?.settlements || [];

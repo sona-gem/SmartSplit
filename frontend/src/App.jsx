@@ -15,6 +15,7 @@ import useTripStore from "./store/useTripStore";
 import Trips from "./pages/Trips";
 import TripSummary from "./pages/TripSummary";
 import SettleUp from "./pages/SettleUp";
+import JoinTrip from "./pages/JoinTrip";
 
 function Navbar({ user, logout }) {
   const location = useLocation();
@@ -83,6 +84,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/join/:token" element={<JoinTrip />} />
           <Route
             path="/trip/:tripId/expenses"
             element={

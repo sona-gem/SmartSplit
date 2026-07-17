@@ -11,11 +11,16 @@ export function simplifyDebts(balances) {
       name,
       amount,
     }))
-    .filter((p) => Math.abs(p.amount) > 0.01);
+    .filter(
+      (p) =>
+        p.amount !== undefined && !isNaN(p.amount) && Math.abs(p.amount) > 0.01,
+    );
+
+  if (people.length === 0) return [];
 
   const transactions = [];
 
-  while (true) {
+  while (people.length >= 2) {
     people.sort((a, b) => a.amount - b.amount);
     const debtor = people[0]; //owes the most
     const creditor = people[people.length - 1]; //is owed the most

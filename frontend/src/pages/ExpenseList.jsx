@@ -1,11 +1,18 @@
 import ExpenseCard from "../components/ExpenseCard";
 import useTripStore from "../store/useTripStore";
 import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function ExpenseList() {
   const { tripId } = useParams();
   const expenses = useTripStore((state) => state.expenses);
   const trip = useTripStore((state) => state.trip);
+  const fetchTrip = useTripStore((state) => state.fetchTrip);
+  const token = useTripStore((state) => state.token);
+
+  useEffect(() => {
+    if (token && tripId) fetchTrip(tripId);
+  }, []);
   //idea : to display all expenses using ExpenseCard for each expense
   //props passed are key(to identify each expnseCard uniquely), exoense, members
   //null check

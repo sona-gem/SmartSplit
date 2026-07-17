@@ -14,7 +14,14 @@ export default function Login() {
     e.preventDefault();
     const result = await login(email, password);
     if (result.success) {
-      navigate("/");
+      const pending = localStorage.getItem("pendingInvite");
+      console.log("pending invite:", pending);
+      if (pending) {
+        localStorage.removeItem("pendingInvite");
+        navigate(pending);
+      } else {
+        navigate("/");
+      }
     } else {
       setError(result.error);
     }

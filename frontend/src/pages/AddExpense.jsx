@@ -16,7 +16,12 @@ export default function AddExpense() {
   const [splitAmong, setSplitAmong] = useState([]);
   const [category, setCategory] = useState("Other");
   const [customCategory, setCustomCategory] = useState("");
+  const fetchTrip = useTripStore((state) => state.fetchTrip);
+  const token = useTripStore((state) => state.token);
 
+  useEffect(() => {
+    if (token && tripId) fetchTrip(tripId);
+  }, []);
   // set defaults once trip loads
   useEffect(() => {
     if (trip) {
